@@ -1,6 +1,6 @@
 <?php
 
-use Illuminate\Http\Request;
+use App\Http\Controllers\API\v1\FilmController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -14,4 +14,6 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-
+Route::apiResources([
+    'films' => FilmController::class,
+]);

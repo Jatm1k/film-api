@@ -3,7 +3,9 @@
 namespace App\Http\Controllers\API\v1;
 
 use App\Http\Controllers\Controller;
+use App\Http\Resources\API\v1\FilmResource;
 use App\Models\API\v1\Film;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
 class FilmController extends Controller
@@ -11,9 +13,10 @@ class FilmController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(): JsonResponse
     {
-        //
+        $films = Film::query()->get();
+        return response()->json(FilmResource::collection($films));
     }
 
     /**
