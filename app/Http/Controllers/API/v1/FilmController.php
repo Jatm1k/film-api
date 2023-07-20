@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\API\v1;
 
+use App\Contracts\API\v1\Films\FilmsContract;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\API\v1\Film\StoreFilmRequest;
 use App\Http\Resources\API\v1\FilmResource;
@@ -24,17 +25,15 @@ class FilmController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(StoreFilmRequest $request)
+    public function store(StoreFilmRequest $request, FilmsContract $service)
     {
-        $film = Film::query()->create([
-            'title' => $request->input('title'),
-            'production_year' => $request->input('production_year'),
-            'duration' => $request->input('duration'),
-            'poster' => upload_file($request->file('poster'), 'film/posters'),
-            'images' => upload_files($request->file('images'), 'film/images'),
-            'trailer' => $request->input('trailer'),
-        ]);
-        return response()->json(new FilmResource($film), Response::HTTP_CREATED);
+        return response()->json(
+            new FilmResource(
+                $service->storeFilm($request->validated())
+            ),
+            Response::HTTP_CREATED
+        );
+
     }
 
     /**
