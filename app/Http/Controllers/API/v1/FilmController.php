@@ -3,10 +3,12 @@
 namespace App\Http\Controllers\API\v1;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\API\v1\Film\StoreFilmRequest;
 use App\Http\Resources\API\v1\FilmResource;
 use App\Models\API\v1\Film;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Symfony\Component\HttpFoundation\Response;
 
 class FilmController extends Controller
 {
@@ -22,9 +24,17 @@ class FilmController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(StoreFilmRequest $request)
     {
-        //
+        $film = Film::query()->create([
+            'title' => $request->input('title'),
+            'production_year' => $request->input('production_year'),
+            'duration' => $request->input('duration'),
+            'poster' => upload_file($request->file('poster'), 'film/posters'),
+            'images' => upload_files($request->file('images'), 'film/images'),
+            'trailer' => $request->input('trailer'),
+        ]);
+        return response()->json(new FilmResource($film), Response::HTTP_CREATED);
     }
 
     /**
@@ -32,7 +42,7 @@ class FilmController extends Controller
      */
     public function show(Film $film)
     {
-        //
+        return response()->json(new FilmResource($film));
     }
 
     /**
