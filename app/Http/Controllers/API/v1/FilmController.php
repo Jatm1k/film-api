@@ -5,6 +5,7 @@ namespace App\Http\Controllers\API\v1;
 use App\Contracts\API\v1\Films\FilmsContract;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\API\v1\Film\StoreFilmRequest;
+use App\Http\Requests\API\v1\Film\UpdateFilmRequest;
 use App\Http\Resources\API\v1\FilmResource;
 use App\Models\API\v1\Film;
 use Illuminate\Http\JsonResponse;
@@ -13,6 +14,13 @@ use Symfony\Component\HttpFoundation\Response;
 
 class FilmController extends Controller
 {
+    private FilmsContract $service;
+
+    public function __construct(FilmsContract $service)
+    {
+        $this->service = $service;
+    }
+
     /**
      * Display a listing of the resource.
      */
@@ -25,15 +33,14 @@ class FilmController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(StoreFilmRequest $request, FilmsContract $service)
+    public function store(StoreFilmRequest $request)
     {
         return response()->json(
             new FilmResource(
-                $service->storeFilm($request->validated())
+                $this->service->storeFilm($request->validated())
             ),
             Response::HTTP_CREATED
         );
-
     }
 
     /**
@@ -47,9 +54,11 @@ class FilmController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Film $film)
+    public function update(UpdateFilmRequest $request, Film $film)
     {
-        //
+        return response()->json([
+            'status' => $this->service->updateFilm($film, $request->validated())
+        ]);
     }
 
     /**

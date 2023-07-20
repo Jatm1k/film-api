@@ -21,7 +21,7 @@ class FilmFactory extends Factory
             'production_year' => fake()->year(),
             'duration' => fake()->time('H:i'),
             'poster' => 'https://via.placeholder.com/300x450',
-            'images' => json_encode([]),
+            'images' => [],
             'trailer' => null,
         ];
     }

@@ -17,4 +17,8 @@ class Film extends Model
         'images',
         'trailer',
     ];
+
+    protected $casts = [
+        'images' => 'array'
+    ];
 }

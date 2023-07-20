@@ -2,6 +2,7 @@
 
 namespace Tests\Feature;
 
+use App\Models\API\v1\Film;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Http\UploadedFile;
@@ -85,5 +86,42 @@ class FilmResourceTest extends TestCase
             ]);
 
         $this->assertDatabaseHas('films', ['title' => $filmData['title']]);
+    }
+
+    public function test_film_update(): void
+    {
+        $film = Film::factory(1)->create()->first();
+
+        $filmData = [
+            'title' => 'Fight Club',
+            'production_year' => 1999,
+            'duration' => '02:19',
+            'poster' => UploadedFile::fake()->image('fake-image.jpg'),
+            'images' => [UploadedFile::fake()->image('fake-image2.jpg')],
+            'trailer' => null,
+        ];
+
+        $response = $this->put('/api/v1/films/1', $filmData);
+
+        $response
+            ->assertOk()
+            ->assertHeader('Content-Type', 'application/json')
+            ->assertJson([
+                'status' => true
+            ]);
+
+        $this->assertDatabaseMissing(
+            'films',
+            [
+                'title' => $film->title,
+            ]
+        );
+
+        $this->assertDatabaseHas(
+            'films',
+            [
+                'title' => $filmData['title'],
+            ]
+        );
     }
 }
