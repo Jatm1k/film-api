@@ -9,7 +9,6 @@ use App\Http\Requests\API\v1\Film\UpdateFilmRequest;
 use App\Http\Resources\API\v1\FilmResource;
 use App\Models\API\v1\Film;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
 
 class FilmController extends Controller
@@ -66,6 +65,8 @@ class FilmController extends Controller
      */
     public function destroy(Film $film)
     {
-        //
+        return response()->json([
+            'status' => $this->service->destroyFilm($film)
+        ]);
     }
 }

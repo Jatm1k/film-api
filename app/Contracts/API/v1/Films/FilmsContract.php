@@ -18,4 +18,10 @@ interface FilmsContract
      * @return bool
      */
     public function updateFilm(Film $film, array $data): bool;
+
+    /**
+     * @param  Film  $film
+     * @return bool
+     */
+    public function destroyFilm(Film $film): bool;
 }

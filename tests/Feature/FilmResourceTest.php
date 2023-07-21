@@ -17,7 +17,7 @@ class FilmResourceTest extends TestCase
     {
         parent::setUp();
         $this->withExceptionHandling();
-        Storage::fake();
+        Storage::fake('public');
     }
 
     public function test_film_index(): void
@@ -62,16 +62,23 @@ class FilmResourceTest extends TestCase
 
     public function test_film_store(): void
     {
+        $filmPoster = UploadedFile::fake()->image('fake-poster.jpg');
+        $filmImages = [
+            UploadedFile::fake()->image('fake-image1.jpg'),
+            UploadedFile::fake()->image('fake-image2.jpg'),
+            UploadedFile::fake()->image('fake-image3.jpg'),
+        ];
         $filmData = [
             'title' => 'Fight Club',
             'production_year' => 1999,
             'duration' => '02:19',
-            'poster' => UploadedFile::fake()->image('fake-image.jpg'),
-            'images' => [UploadedFile::fake()->image('fake-image2.jpg')],
+            'poster' => $filmPoster,
+            'images' => $filmImages,
             'trailer' => null,
         ];
 
         $response = $this->post('/api/v1/films', $filmData);
+        
 
         $response
             ->assertCreated()

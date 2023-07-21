@@ -26,7 +26,7 @@ class FilesService implements FilesHelper
 
     public function deleteFile(string $file): void
     {
-        $filePath = str_replace(config('app.storage_url'), '', $file);
+        $filePath = get_file_path($file);
         if (Storage::exists($filePath)) {
             Storage::delete($filePath);
         }
