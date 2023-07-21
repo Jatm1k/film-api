@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\API\v1\AuthController;
 use App\Http\Controllers\API\v1\FilmController;
 use Illuminate\Support\Facades\Route;
 
@@ -17,3 +18,7 @@ use Illuminate\Support\Facades\Route;
 Route::apiResources([
     'films' => FilmController::class,
 ]);
+
+Route::controller(AuthController::class)->group(function () {
+    Route::post('register', 'register');
+});

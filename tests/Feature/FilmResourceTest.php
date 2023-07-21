@@ -78,7 +78,7 @@ class FilmResourceTest extends TestCase
         ];
 
         $response = $this->post('/api/v1/films', $filmData);
-        
+
 
         $response
             ->assertCreated()
