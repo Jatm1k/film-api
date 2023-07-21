@@ -2,6 +2,7 @@
 
 
 use App\Models\API\v1\Film;
+use App\Models\API\v1\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Http\UploadedFile;
@@ -29,11 +30,38 @@ class AuthTest extends TestCase
             'password_confirmation' => 'password',
         ];
 
+        $this->assertFalse(auth()->check());
+
         $response = $this->post('/api/v1/register', $userData);
 
         $response
             ->assertStatus(201)
             ->assertHeader('Content-Type', 'application/json')
             ->assertJsonStructure(['token']);
+
+        $this->assertTrue(auth()->check());
+
+    }
+
+    public function test_login(): void
+    {
+        $user = User::factory(1)->createOne();
+
+        $userData = [
+            'login' => $user->login,
+            'password' => 'password',
+        ];
+
+        $this->assertFalse(auth()->check());
+
+        $response = $this->post('/api/v1/login', $userData);
+
+        $response
+            ->assertStatus(200)
+            ->assertHeader('Content-Type', 'application/json')
+            ->assertJsonStructure(['token']);
+
+        $this->assertTrue(auth()->check());
+
     }
 }
