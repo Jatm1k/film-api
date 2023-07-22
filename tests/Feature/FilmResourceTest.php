@@ -13,6 +13,15 @@ class FilmResourceTest extends TestCase
 {
     use RefreshDatabase;
 
+    private array $filmStructure = [
+        'title',
+        'production_year',
+        'duration',
+        'poster',
+        'images',
+        'trailer',
+    ];
+
     protected function setUp(): void
     {
         parent::setUp();
@@ -29,16 +38,7 @@ class FilmResourceTest extends TestCase
         $response
             ->assertStatus(200)
             ->assertHeader('Content-Type', 'application/json')
-            ->assertJsonStructure([
-                '*' => [
-                    'title',
-                    'production_year',
-                    'duration',
-                    'poster',
-                    'images',
-                    'trailer',
-                ]
-            ]);
+            ->assertJsonStructure(['*' => $this->filmStructure]);
     }
 
     public function test_film_show(): void
@@ -50,14 +50,7 @@ class FilmResourceTest extends TestCase
         $response
             ->assertStatus(200)
             ->assertHeader('Content-Type', 'application/json')
-            ->assertJsonStructure([
-                'title',
-                'production_year',
-                'duration',
-                'poster',
-                'images',
-                'trailer',
-            ]);
+            ->assertJsonStructure($this->filmStructure);
     }
 
     public function test_film_store(): void
@@ -83,14 +76,7 @@ class FilmResourceTest extends TestCase
         $response
             ->assertCreated()
             ->assertHeader('Content-Type', 'application/json')
-            ->assertJsonStructure([
-                'title',
-                'production_year',
-                'duration',
-                'poster',
-                'images',
-                'trailer',
-            ]);
+            ->assertJsonStructure($this->filmStructure);
 
         $this->assertDatabaseHas('films', ['title' => $filmData['title']]);
     }

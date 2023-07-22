@@ -40,11 +40,11 @@ class AuthTest extends TestCase
             ->assertJsonStructure(['token']);
 
         $this->assertTrue(auth()->check());
-
     }
 
     public function test_login(): void
     {
+        $this->seed();
         $user = User::factory(1)->createOne();
 
         $userData = [
@@ -62,6 +62,5 @@ class AuthTest extends TestCase
             ->assertJsonStructure(['token']);
 
         $this->assertTrue(auth()->check());
-
     }
 }

@@ -2,6 +2,7 @@
 
 namespace Database\Factories\API\v1;
 
+use App\Models\API\v1\Role;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -17,6 +18,7 @@ class UserFactory extends Factory
     public function definition(): array
     {
         return [
+            'role_id' => Role::query()->inRandomOrder()->first(),
             'name' => fake()->name(),
             'login' => fake()->unique()->word(),
             'email' => fake()->unique()->safeEmail(),
