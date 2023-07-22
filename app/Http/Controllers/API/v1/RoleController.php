@@ -4,9 +4,12 @@ namespace App\Http\Controllers\API\v1;
 
 use App\Contracts\API\v1\Roles\RolesContract;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\API\v1\Role\StoreRoleRequest;
+use App\Http\Requests\API\v1\Role\UpdateRoleRequest;
 use App\Http\Resources\API\v1\RoleResource;
 use App\Models\API\v1\Role;
 use Illuminate\Http\Request;
+use Symfony\Component\HttpFoundation\Response;
 
 class RoleController extends Controller
 {
@@ -29,12 +32,13 @@ class RoleController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(StoreRoleRequest $request)
     {
         return response()->json(
             new RoleResource(
                 $this->service->storeRole($request->validated())
-            )
+            ),
+            Response::HTTP_CREATED
         );
     }
 
@@ -49,7 +53,7 @@ class RoleController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Role $role)
+    public function update(UpdateRoleRequest $request, Role $role)
     {
         return response()->json([
             'status' => $this->service->updateRole($role, $request->validated())
