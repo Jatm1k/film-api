@@ -6,6 +6,7 @@ use App\Contracts\API\v1\Auth\AuthContract;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\API\v1\Auth\LoginRequest;
 use App\Http\Requests\API\v1\Auth\RegisterRequest;
+use Illuminate\Support\Facades\Auth;
 use Symfony\Component\HttpFoundation\Response;
 
 class AuthController extends Controller

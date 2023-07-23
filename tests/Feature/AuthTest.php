@@ -20,7 +20,7 @@ class AuthTest extends TestCase
         Storage::fake('public');
     }
 
-    public function test_register(): void
+    public function test_success_register(): void
     {
         $userData = [
             'name' => 'Ivan Ivanov',
@@ -42,10 +42,35 @@ class AuthTest extends TestCase
         $this->assertTrue(auth()->check());
     }
 
+    public function test_fail_register(): void
+    {
+        $user = User::factory()->createOne();
+        $userData = [
+            'name' => 'Ivan Ivanov',
+            'login' => 'vanya',
+            'email' => 'ivan@mail.ru',
+            'password' => 'password',
+            'password_confirmation' => 'password',
+        ];
+
+        auth()->login($user);
+
+        $this->assertTrue(auth()->check());
+
+        $response = $this->post('/api/v1/register', $userData);
+
+        $response
+            ->assertStatus(422)
+            ->assertHeader('Content-Type', 'application/json')
+            ->assertJson(['message' => __('auth.authenticated')]);
+
+        $this->assertTrue(auth()->check());
+    }
+
     public function test_login(): void
     {
         $this->seed();
-        $user = User::factory(1)->createOne();
+        $user = User::factory()->createOne();
 
         $userData = [
             'login' => $user->login,

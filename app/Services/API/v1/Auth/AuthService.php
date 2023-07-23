@@ -4,6 +4,8 @@ namespace App\Services\API\v1\Auth;
 
 use App\Contracts\API\v1\Auth\AuthContract;
 use App\Models\API\v1\User;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\ValidationException;
 
 class AuthService implements AuthContract
@@ -13,25 +15,26 @@ class AuthService implements AuthContract
     {
         $user = User::query()->create($userData);
 
-        auth()->login($user);
-
-        return $this->getToken();
+        return $this->getToken($user);
     }
 
     public function login(array $userData): string
     {
-        if (!auth()->attempt($userData)) {
+        $user = User::where('login', $userData['login'])->first();
+
+        if (!$user || !Hash::check($userData['password'], $user->password)) {
             throw ValidationException::withMessages([
                 'login' => [__('auth.failed')]
             ]);
         }
-        return $this->getToken();
+
+        return $this->getToken($user);
     }
 
-    private function getToken(): string
+    private function getToken(User $user): string
     {
-        return auth()->user()
-            ->createToken('auth-token')
+        return $user
+            ->createToken('api_token')
             ->plainTextToken;
     }
 }
