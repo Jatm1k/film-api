@@ -11,30 +11,23 @@ use Illuminate\Validation\ValidationException;
 class AuthService implements AuthContract
 {
 
-    public function register(array $userData): string
+    public function register(array $userData): User
     {
         $user = User::query()->create($userData);
 
-        return $this->getToken($user);
+        auth()->login($user);
+
+        return $user;
     }
 
-    public function login(array $userData): string
+    public function login(array $userData): User
     {
-        $user = User::where('login', $userData['login'])->first();
-
-        if (!$user || !Hash::check($userData['password'], $user->password)) {
+        if (!Auth::attempt($userData)) {
             throw ValidationException::withMessages([
                 'login' => [__('auth.failed')]
             ]);
         }
-
-        return $this->getToken($user);
-    }
-
-    private function getToken(User $user): string
-    {
-        return $user
-            ->createToken('api_token')
-            ->plainTextToken;
+        
+        return auth()->user();
     }
 }

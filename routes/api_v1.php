@@ -21,9 +21,4 @@ Route::apiResources([
     'roles' => RoleController::class,
 ]);
 
-Route::controller(AuthController::class)->group(function () {
-    Route::post('register', 'register')->middleware('guest');
-    Route::post('login', 'login')->middleware('guest');
-});
-
 

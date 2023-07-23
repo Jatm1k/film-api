@@ -13,6 +13,14 @@ class AuthTest extends TestCase
 {
     use RefreshDatabase;
 
+    private array $userStructure = [
+        'id',
+        'name',
+        'login',
+        'email',
+        'role',
+    ];
+
     protected function setUp(): void
     {
         parent::setUp();
@@ -32,12 +40,12 @@ class AuthTest extends TestCase
 
         $this->assertFalse(auth()->check());
 
-        $response = $this->post('/api/v1/register', $userData);
+        $response = $this->post('/register', $userData);
 
         $response
             ->assertStatus(201)
             ->assertHeader('Content-Type', 'application/json')
-            ->assertJsonStructure(['token']);
+            ->assertJsonStructure($this->userStructure);
 
         $this->assertTrue(auth()->check());
     }
@@ -57,7 +65,7 @@ class AuthTest extends TestCase
 
         $this->assertTrue(auth()->check());
 
-        $response = $this->post('/api/v1/register', $userData);
+        $response = $this->post('/register', $userData);
 
         $response
             ->assertStatus(422)
@@ -79,12 +87,12 @@ class AuthTest extends TestCase
 
         $this->assertFalse(auth()->check());
 
-        $response = $this->post('/api/v1/login', $userData);
+        $response = $this->post('/login', $userData);
 
         $response
             ->assertStatus(200)
             ->assertHeader('Content-Type', 'application/json')
-            ->assertJsonStructure(['token']);
+            ->assertJsonStructure($this->userStructure);
 
         $this->assertTrue(auth()->check());
     }

@@ -6,6 +6,7 @@ use App\Contracts\API\v1\Auth\AuthContract;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\API\v1\Auth\LoginRequest;
 use App\Http\Requests\API\v1\Auth\RegisterRequest;
+use App\Http\Resources\API\v1\UserResource;
 use Illuminate\Support\Facades\Auth;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -20,15 +21,20 @@ class AuthController extends Controller
 
     public function register(RegisterRequest $request)
     {
-        return response()->json([
-            'token' => $this->service->register($request->validated())
-        ], Response::HTTP_CREATED);
+        return response()->json(
+            new UserResource($this->service
+                ->register($request->validated())
+            ),
+            Response::HTTP_CREATED
+        );
     }
 
     public function login(LoginRequest $request)
     {
-        return response()->json([
-            'token' => $this->service->login($request->validated())
-        ]);
+        return response()->json(
+            new UserResource($this->service
+                ->login($request->validated())
+            )
+        );
     }
 }
