@@ -50,9 +50,10 @@ class AuthTest extends TestCase
         $this->assertTrue(auth()->check());
     }
 
-    public function test_fail_register(): void
+    public function test_failed_register(): void
     {
         $user = User::factory()->createOne();
+        auth()->login($user);
         $userData = [
             'name' => 'Ivan Ivanov',
             'login' => 'vanya',
@@ -60,8 +61,6 @@ class AuthTest extends TestCase
             'password' => 'password',
             'password_confirmation' => 'password',
         ];
-
-        auth()->login($user);
 
         $this->assertTrue(auth()->check());
 
@@ -75,9 +74,8 @@ class AuthTest extends TestCase
         $this->assertTrue(auth()->check());
     }
 
-    public function test_login(): void
+    public function test_success_login(): void
     {
-        $this->seed();
         $user = User::factory()->createOne();
 
         $userData = [
@@ -95,5 +93,56 @@ class AuthTest extends TestCase
             ->assertJsonStructure($this->userStructure);
 
         $this->assertTrue(auth()->check());
+    }
+
+    public function test_failed_login(): void
+    {
+        $user = User::factory()->createOne();
+        auth()->login($user);
+
+        $this->assertTrue(auth()->check());
+
+        $userData = [
+            'login' => $user->login,
+            'password' => 'password',
+        ];
+
+        $response = $this->post('/login', $userData);
+
+        $response
+            ->assertStatus(422)
+            ->assertHeader('Content-Type', 'application/json')
+            ->assertJson(['message' => __('auth.authenticated')]);
+
+        $this->assertTrue(auth()->check());
+    }
+
+    public function test_success_logout()
+    {
+        $user = User::factory()->createOne();
+        auth()->login($user);
+
+        $this->assertTrue(auth()->check());
+
+        $response = $this->delete('/logout');
+
+        $response
+            ->assertNoContent();
+
+        $this->assertFalse(auth()->check());
+    }
+
+    public function test_failed_logout()
+    {
+        $this->assertFalse(auth()->check());
+
+        $response = $this->delete('/logout');
+
+        $response
+            ->assertStatus(401)
+            ->assertHeader('Content-Type', 'application/json')
+            ->assertJson(['message' => __('auth.unauthenticated')]);
+
+        $this->assertFalse(auth()->check());
     }
 }

@@ -17,4 +17,5 @@ use Illuminate\Support\Facades\Route;
 Route::controller(AuthController::class)->group(function () {
     Route::post('register', 'register')->middleware('guest');
     Route::post('login', 'login')->middleware('guest');
+    Route::delete('logout', 'logout')->middleware('auth');
 });

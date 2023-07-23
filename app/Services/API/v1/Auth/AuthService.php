@@ -27,7 +27,12 @@ class AuthService implements AuthContract
                 'login' => [__('auth.failed')]
             ]);
         }
-        
+
         return auth()->user();
+    }
+
+    public function logout(): void
+    {
+        auth()->logout();
     }
 }
