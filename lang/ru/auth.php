@@ -15,6 +15,7 @@ return [
 
     'failed' => 'Неверный логин или пароль',
     'authenticated' => 'Вы уже авторизованы',
-    'unauthenticated' => 'Вы не авторизованы'
+    'unauthenticated' => 'Вы не авторизованы',
+    'forbidden' => 'У вас недостаточно прав',
 
 ];

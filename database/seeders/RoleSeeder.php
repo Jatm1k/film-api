@@ -3,6 +3,7 @@
 namespace Database\Seeders;
 
 use App\Models\API\v1\Role;
+use App\Enums\API\v1\Role as EnumRole;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
@@ -13,7 +14,9 @@ class RoleSeeder extends Seeder
      */
     public function run(): void
     {
-        Role::factory(1)->create(['name' => 'viewer']);
-        Role::factory(1)->create(['name' => 'admin']);
+        collect(EnumRole::cases())
+            ->each(
+                fn(EnumRole $role) => Role::factory()->createOne(['name' => $role->name])
+            );
     }
 }
