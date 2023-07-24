@@ -18,6 +18,8 @@ class FilmController extends Controller
     public function __construct(FilmsContract $service)
     {
         $this->service = $service;
+
+        $this->middleware(['auth', 'role:admin'])->except(['index', 'show']);
     }
 
     /**

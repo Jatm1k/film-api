@@ -14,7 +14,7 @@ class UpdateFilmRequest extends FormRequest
             'production_year' => ['nullable', 'date_format:Y'],
             'duration' => ['required', 'date_format:H:i'],
             'poster' => ['required', new ImageOrUrl()],
-            'images' => ['nullable', 'array'],
+            'images' => ['required', 'array'],
             'images.*' => [new ImageOrUrl()],
             'trailer' => ['nullable', 'file'],
         ];

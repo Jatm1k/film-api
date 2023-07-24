@@ -3,6 +3,8 @@
 namespace Database\Seeders;
 
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
+use App\Enums\API\v1\Role;
+use App\Models\API\v1\User;
 use Illuminate\Database\Seeder;
 
 class DatabaseSeeder extends Seeder
@@ -15,6 +17,11 @@ class DatabaseSeeder extends Seeder
         $this->call([
             FilmSeeder::class,
             RoleSeeder::class,
+        ]);
+
+        User::factory()->createOne([
+            'login' => 'admin',
+            'role_id' => Role::Admin->getId()
         ]);
     }
 }

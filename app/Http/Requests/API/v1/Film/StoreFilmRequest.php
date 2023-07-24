@@ -13,7 +13,7 @@ class StoreFilmRequest extends FormRequest
             'production_year' => ['nullable', 'date_format:Y'],
             'duration' => ['required', 'date_format:H:i'],
             'poster' => ['required', 'image'],
-            'images' => ['nullable', 'array'],
+            'images' => ['required', 'array'],
             'images.*' => ['image'],
             'trailer' => ['nullable', 'file'],
         ];

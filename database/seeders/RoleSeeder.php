@@ -16,7 +16,7 @@ class RoleSeeder extends Seeder
     {
         collect(EnumRole::cases())
             ->each(
-                fn(EnumRole $role) => Role::factory()->createOne(['name' => $role->name])
+                fn(EnumRole $role) => Role::factory()->createOne(['name' => $role->value])
             );
     }
 }

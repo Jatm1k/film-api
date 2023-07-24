@@ -18,6 +18,8 @@ class RoleController extends Controller
     public function __construct(RolesContract $service)
     {
         $this->service = $service;
+
+        $this->middleware(['auth', 'role:admin']);
     }
 
     /**
