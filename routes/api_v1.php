@@ -1,6 +1,7 @@
 <?php
 
-use Illuminate\Http\Request;
+use App\Http\Controllers\API\v1\FilmController;
+use App\Http\Controllers\API\v1\RoleController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -14,6 +15,13 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    return $request->user();
-});
+Route::apiResources([
+    'films' => FilmController::class,
+    'roles' => RoleController::class,
+]);
+
+Route::get('user', function () {
+    return 'user';
+})->middleware(['auth', 'role:admin']);
+
+
