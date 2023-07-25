@@ -2,7 +2,9 @@
 
 namespace Tests\Feature;
 
+use App\Enums\API\v1\Role;
 use App\Models\API\v1\Film;
+use App\Models\API\v1\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Http\UploadedFile;
@@ -27,12 +29,11 @@ class FilmResourceTest extends TestCase
         parent::setUp();
         $this->withExceptionHandling();
         Storage::fake('public');
+        $this->seed();
     }
 
     public function test_film_index(): void
     {
-        $this->seed();
-
         $response = $this->get('/api/v1/films');
 
         $response
@@ -43,8 +44,6 @@ class FilmResourceTest extends TestCase
 
     public function test_film_show(): void
     {
-        $this->seed();
-
         $response = $this->get('/api/v1/films/1');
 
         $response
@@ -53,8 +52,12 @@ class FilmResourceTest extends TestCase
             ->assertJsonStructure($this->filmStructure);
     }
 
-    public function test_film_store(): void
+    public function test_film_success_admin_store(): void
     {
+        $user = User::factory()->createOne(['role_id' => Role::Admin->getId()]);
+        auth()->login($user);
+        $this->assertTrue(auth()->check());
+
         $filmPoster = UploadedFile::fake()->image('fake-poster.jpg');
         $filmImages = [
             UploadedFile::fake()->image('fake-image1.jpg'),
@@ -81,8 +84,74 @@ class FilmResourceTest extends TestCase
         $this->assertDatabaseHas('films', ['title' => $filmData['title']]);
     }
 
-    public function test_film_update(): void
+    public function test_film_failed_user_store(): void
     {
+        $user = User::factory()->createOne(['role_id' => Role::Viewer->getId()]);
+        auth()->login($user);
+        $this->assertTrue(auth()->check());
+
+        $filmPoster = UploadedFile::fake()->image('fake-poster.jpg');
+        $filmImages = [
+            UploadedFile::fake()->image('fake-image1.jpg'),
+            UploadedFile::fake()->image('fake-image2.jpg'),
+            UploadedFile::fake()->image('fake-image3.jpg'),
+        ];
+        $filmData = [
+            'title' => 'Fight Club',
+            'production_year' => 1999,
+            'duration' => '02:19',
+            'poster' => $filmPoster,
+            'images' => $filmImages,
+            'trailer' => null,
+        ];
+
+        $response = $this->post('/api/v1/films', $filmData);
+
+
+        $response
+            ->assertForbidden()
+            ->assertHeader('Content-Type', 'application/json')
+            ->assertJson(['message' => __('auth.forbidden')]);
+
+        $this->assertDatabaseMissing('films', ['title' => $filmData['title']]);
+    }
+
+    public function test_film_failed_no_login_store(): void
+    {
+        $this->assertFalse(auth()->check());
+
+        $filmPoster = UploadedFile::fake()->image('fake-poster.jpg');
+        $filmImages = [
+            UploadedFile::fake()->image('fake-image1.jpg'),
+            UploadedFile::fake()->image('fake-image2.jpg'),
+            UploadedFile::fake()->image('fake-image3.jpg'),
+        ];
+        $filmData = [
+            'title' => 'Fight Club',
+            'production_year' => 1999,
+            'duration' => '02:19',
+            'poster' => $filmPoster,
+            'images' => $filmImages,
+            'trailer' => null,
+        ];
+
+        $response = $this->post('/api/v1/films', $filmData);
+
+
+        $response
+            ->assertUnauthorized()
+            ->assertHeader('Content-Type', 'application/json')
+            ->assertJson(['message' => __('auth.unauthenticated')]);
+
+        $this->assertDatabaseMissing('films', ['title' => $filmData['title']]);
+    }
+
+    public function test_film_success_admin_update(): void
+    {
+        $user = User::factory()->createOne(['role_id' => Role::Admin->getId()]);
+        auth()->login($user);
+        $this->assertTrue(auth()->check());
+
         $film = Film::factory(1)->create()->first();
 
         $filmData = [
@@ -94,7 +163,7 @@ class FilmResourceTest extends TestCase
             'trailer' => null,
         ];
 
-        $response = $this->put('/api/v1/films/1', $filmData);
+        $response = $this->put("/api/v1/films/{$film->id}", $filmData);
 
         $response
             ->assertOk()
@@ -111,6 +180,82 @@ class FilmResourceTest extends TestCase
         );
 
         $this->assertDatabaseHas(
+            'films',
+            [
+                'title' => $filmData['title'],
+            ]
+        );
+    }
+
+    public function test_film_failed_user_update(): void
+    {
+        $user = User::factory()->createOne(['role_id' => Role::Viewer->getId()]);
+        auth()->login($user);
+        $this->assertTrue(auth()->check());
+
+        $film = Film::factory(1)->create()->first();
+
+        $filmData = [
+            'title' => 'Fight Club',
+            'production_year' => 1999,
+            'duration' => '02:19',
+            'poster' => UploadedFile::fake()->image('fake-image.jpg'),
+            'images' => [UploadedFile::fake()->image('fake-image2.jpg')],
+            'trailer' => null,
+        ];
+
+        $response = $this->put("/api/v1/films/{$film->id}", $filmData);
+
+        $response
+            ->assertForbidden()
+            ->assertHeader('Content-Type', 'application/json')
+            ->assertJson(['message' => __('auth.forbidden')]);
+
+        $this->assertDatabaseHas(
+            'films',
+            [
+                'title' => $film->title,
+            ]
+        );
+
+        $this->assertDatabaseMissing(
+            'films',
+            [
+                'title' => $filmData['title'],
+            ]
+        );
+    }
+
+    public function test_film_failed_no_login_update(): void
+    {
+        $this->assertFalse(auth()->check());
+
+        $film = Film::factory(1)->create()->first();
+
+        $filmData = [
+            'title' => 'Fight Club',
+            'production_year' => 1999,
+            'duration' => '02:19',
+            'poster' => UploadedFile::fake()->image('fake-image.jpg'),
+            'images' => [UploadedFile::fake()->image('fake-image2.jpg')],
+            'trailer' => null,
+        ];
+
+        $response = $this->put("/api/v1/films/{$film->id}", $filmData);
+
+        $response
+            ->assertUnauthorized()
+            ->assertHeader('Content-Type', 'application/json')
+            ->assertJson(['message' => __('auth.unauthenticated')]);
+
+        $this->assertDatabaseHas(
+            'films',
+            [
+                'title' => $film->title,
+            ]
+        );
+
+        $this->assertDatabaseMissing(
             'films',
             [
                 'title' => $filmData['title'],

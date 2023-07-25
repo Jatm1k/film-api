@@ -13,7 +13,7 @@ class AuthService implements AuthContract
 
     public function register(array $userData): User
     {
-        $user = User::query()->create($userData);
+        $user = User::query()->create($userData)->refresh();
 
         auth()->login($user);
 
