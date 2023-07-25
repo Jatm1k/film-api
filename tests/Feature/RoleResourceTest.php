@@ -21,6 +21,9 @@ class RoleResourceTest extends TestCase
     {
         parent::setUp();
         $this->withExceptionHandling();
+
+        $user = \App\Models\API\v1\User::factory()->createOne(['role_id' => \App\Enums\API\v1\Role::Admin->getId()]);
+        auth()->login($user);
     }
 
     public function test_role_index(): void

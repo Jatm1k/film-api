@@ -1,12 +1,8 @@
 <?php
 
 
-use App\Models\API\v1\Film;
 use App\Models\API\v1\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Foundation\Testing\WithFaker;
-use Illuminate\Http\UploadedFile;
-use Illuminate\Support\Facades\Storage;
 use Tests\TestCase;
 
 class AuthTest extends TestCase
@@ -25,7 +21,7 @@ class AuthTest extends TestCase
     {
         parent::setUp();
         $this->withExceptionHandling();
-        Storage::fake('public');
+        $this->seed();
     }
 
     public function test_success_register(): void

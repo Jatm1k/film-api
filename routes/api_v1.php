@@ -21,7 +21,7 @@ Route::apiResources([
 ]);
 
 Route::get('user', function () {
-    return 'user';
-})->middleware(['auth', 'role:admin']);
+    return new \App\Http\Resources\API\v1\UserResource(auth()->user());
+})->middleware(['auth']);
 
 
