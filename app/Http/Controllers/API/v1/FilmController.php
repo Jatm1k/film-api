@@ -86,4 +86,13 @@ class FilmController extends Controller
             'message' => __('film.message.watch'),
         ]);
     }
+
+    public function unwatch(Film $film)
+    {
+        $this->service->unwatch($film);
+        return response()->json([
+            'status' => __('response.status.success'),
+            'message' => __('film.message.unwatch'),
+        ]);
+    }
 }

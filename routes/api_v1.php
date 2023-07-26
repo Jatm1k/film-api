@@ -24,6 +24,7 @@ Route::apiResources([
 
 Route::controller(FilmController::class)->prefix('films')->middleware('auth')->group(function () {
     Route::get('/{film}/watch', 'watch');
+    Route::get('/{film}/unwatch', 'unwatch');
 });
 
 Route::controller(UserController::class)->middleware('auth')->group(function () {

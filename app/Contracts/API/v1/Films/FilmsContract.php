@@ -30,4 +30,10 @@ interface FilmsContract
      * @return void
      */
     public function watch(Film $film): void;
+
+    /**
+     * @param  Film  $film
+     * @return void
+     */
+    public function unwatch(Film $film): void;
 }
