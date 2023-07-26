@@ -6,7 +6,8 @@ use App\Contracts\API\v1\Films\FilmsContract;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\API\v1\Film\StoreFilmRequest;
 use App\Http\Requests\API\v1\Film\UpdateFilmRequest;
-use App\Http\Resources\API\v1\FilmResource;
+use App\Http\Resources\API\v1\Film\FilmMinifiedResource;
+use App\Http\Resources\API\v1\Film\FilmResource;
 use App\Models\API\v1\Film;
 use Illuminate\Http\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
@@ -19,7 +20,7 @@ class FilmController extends Controller
     {
         $this->service = $service;
 
-        $this->middleware(['auth', 'role:admin'])->except(['index', 'show']);
+        $this->middleware(['auth', 'role:admin'])->only(['store', 'update', 'destroy']);
     }
 
     /**
@@ -28,7 +29,7 @@ class FilmController extends Controller
     public function index(): JsonResponse
     {
         $films = Film::query()->get();
-        return response()->json(FilmResource::collection($films));
+        return response()->json(FilmMinifiedResource::collection($films));
     }
 
     /**
@@ -57,8 +58,10 @@ class FilmController extends Controller
      */
     public function update(UpdateFilmRequest $request, Film $film)
     {
+        $this->service->updateFilm($film, $request->validated());
         return response()->json([
-            'status' => $this->service->updateFilm($film, $request->validated())
+            'status' => __('response.status.success'),
+            'message' => __('response.message.updated'),
         ]);
     }
 
@@ -67,8 +70,20 @@ class FilmController extends Controller
      */
     public function destroy(Film $film)
     {
+        $this->service->destroyFilm($film);
+
         return response()->json([
-            'status' => $this->service->destroyFilm($film)
+            'status' => __('response.status.success'),
+            'message' => __('response.message.destroyed'),
+        ]);
+    }
+
+    public function watch(Film $film)
+    {
+        $this->service->watch($film);
+        return response()->json([
+            'status' => __('response.status.success'),
+            'message' => __('film.message.watch'),
         ]);
     }
 }

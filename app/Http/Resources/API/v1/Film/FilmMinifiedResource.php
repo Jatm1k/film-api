@@ -1,11 +1,11 @@
 <?php
 
-namespace App\Http\Resources\API\v1;
+namespace App\Http\Resources\API\v1\Film;
 
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class FilmResource extends JsonResource
+class FilmMinifiedResource extends JsonResource
 {
 
     /**
@@ -21,8 +21,6 @@ class FilmResource extends JsonResource
             'production_year' => $this->production_year,
             'duration' => $this->duration,
             'poster' => $this->poster,
-            'images' => $this->images,
-            'trailer' => $this->trailer,
         ];
     }
 }

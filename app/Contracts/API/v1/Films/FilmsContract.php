@@ -15,13 +15,19 @@ interface FilmsContract
     /**
      * @param  Film  $film
      * @param  array  $data
-     * @return bool
+     * @return void
      */
-    public function updateFilm(Film $film, array $data): bool;
+    public function updateFilm(Film $film, array $data): void;
 
     /**
      * @param  Film  $film
-     * @return bool
+     * @return void
      */
-    public function destroyFilm(Film $film): bool;
+    public function destroyFilm(Film $film): void;
+
+    /**
+     * @param  Film  $film
+     * @return void
+     */
+    public function watch(Film $film): void;
 }

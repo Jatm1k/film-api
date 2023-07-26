@@ -13,13 +13,13 @@ class RolesService implements RolesContract
         return Role::query()->create($data);
     }
 
-    public function updateRole(Role $role, array $data): bool
+    public function updateRole(Role $role, array $data): void
     {
-        return $role->update($data);
+        $role->update($data);
     }
 
-    public function destroyRole(Role $role): bool
+    public function destroyRole(Role $role): void
     {
-        return $role->delete();
+        $role->delete();
     }
 }
