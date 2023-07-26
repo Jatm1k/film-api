@@ -6,7 +6,8 @@ use App\Contracts\API\v1\Files\FilesHelper;
 use App\Contracts\API\v1\Films\FilmsContract;
 use App\Enums\API\v1\Directory;
 use App\Models\API\v1\Film;
-use Illuminate\Support\Facades\Storage;
+use Illuminate\Http\Exceptions\HttpResponseException;
+use Symfony\Component\HttpFoundation\Response;
 
 class FilmsService implements FilmsContract
 {
@@ -24,19 +25,50 @@ class FilmsService implements FilmsContract
         return Film::query()->create($data);
     }
 
-    public function updateFilm(Film $film, array $data): bool
+    public function updateFilm(Film $film, array $data): void
     {
         $data['poster'] = $this->helper->uploadFile($data['poster'], Directory::FilmsPosters->value);
         $data['images'] = $this->helper->uploadFiles($data['images'], Directory::FilmsImages->value);
         $this->helper->deleteFiles(array_diff($film->images, $data['images']));
-        return $film->update($data);
+        $film->update($data);
     }
 
-    public function destroyFilm(Film $film): bool
+    public function destroyFilm(Film $film): void
     {
         $deleteFiles = $film->images;
         $deleteFiles[] = $film->poster;
         $this->helper->deleteFiles($deleteFiles);
-        return $film->delete();
+        $film->delete();
+    }
+
+    public function watch(Film $film): void
+    {
+        if ($this->isWatched($film)) {
+            throw new HttpResponseException(
+                response()->json([
+                    'message' => __('film.error.watched')
+                ], Response::HTTP_UNPROCESSABLE_ENTITY)
+            );
+        }
+
+        $film->viewers()->attach(['user_id' => auth()->id()]);
+    }
+
+    public function unwatch(Film $film): void
+    {
+        if (!$this->isWatched($film)) {
+            throw new HttpResponseException(
+                response()->json([
+                    'message' => __('film.error.unwatched')
+                ], Response::HTTP_UNPROCESSABLE_ENTITY)
+            );
+        }
+
+        $film->viewers()->detach(['user_id' => auth()->id()]);
+    }
+
+    private function isWatched(Film $film): bool
+    {
+        return $film->viewers()->where('user_id', auth()->id())->exists();
     }
 }

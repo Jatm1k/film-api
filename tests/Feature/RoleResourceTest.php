@@ -69,13 +69,13 @@ class RoleResourceTest extends TestCase
 
     public function test_role_update(): void
     {
-        $role = Role::factory(1)->create()->first();
+        $role = Role::factory(1)->createOne();
 
         $roleData = [
             'name' => 'viewer',
         ];
 
-        $response = $this->put('/api/v1/roles/1', $roleData);
+        $response = $this->put("/api/v1/roles/{$role->id}", $roleData);
 
         $response
             ->assertOk()
@@ -95,6 +95,28 @@ class RoleResourceTest extends TestCase
             'roles',
             [
                 'name' => $roleData['name'],
+            ]
+        );
+    }
+
+    public function test_role_destroy(): void
+    {
+        $role = Role::factory(1)->createOne();
+
+        $response = $this->delete("/api/v1/roles/{$role->id}");
+
+        $response
+            ->assertOk()
+            ->assertHeader('Content-Type', 'application/json')
+            ->assertJson([
+                'status' => __('response.status.success'),
+                'message' => __('response.message.destroyed'),
+            ]);
+
+        $this->assertDatabaseMissing(
+            'roles',
+            [
+                'id' => $role->id,
             ]
         );
     }

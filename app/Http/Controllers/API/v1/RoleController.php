@@ -57,8 +57,10 @@ class RoleController extends Controller
      */
     public function update(UpdateRoleRequest $request, Role $role)
     {
+        $this->service->updateRole($role, $request->validated());
         return response()->json([
-            'status' => $this->service->updateRole($role, $request->validated())
+            'status' => __('response.status.success'),
+            'message' => __('response.message.updated'),
         ]);
     }
 
@@ -67,8 +69,10 @@ class RoleController extends Controller
      */
     public function destroy(Role $role)
     {
+        $this->service->destroyRole($role);
         return response()->json([
-            'status' => $this->service->destroyRole($role)
+            'status' => __('response.status.success'),
+            'message' => __('response.message.destroyed'),
         ]);
     }
 }

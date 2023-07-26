@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\API\v1\FilmController;
 use App\Http\Controllers\API\v1\RoleController;
+use App\Http\Controllers\API\v1\UserController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -15,13 +16,20 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
+
 Route::apiResources([
     'films' => FilmController::class,
     'roles' => RoleController::class,
 ]);
 
-Route::get('user', function () {
-    return new \App\Http\Resources\API\v1\UserResource(auth()->user());
-})->middleware(['auth']);
+Route::controller(FilmController::class)->prefix('films')->middleware('auth')->group(function () {
+    Route::post('/{film}/watch', 'watch');
+    Route::delete('/{film}/unwatch', 'unwatch');
+});
+
+Route::controller(UserController::class)->middleware('auth')->group(function () {
+    Route::get('/profile', 'profile');
+    Route::get('/watched', 'watched');
+});
 
 

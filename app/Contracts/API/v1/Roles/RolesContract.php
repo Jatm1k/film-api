@@ -15,13 +15,13 @@ interface RolesContract
     /**
      * @param  Role  $role
      * @param  array  $data
-     * @return bool
+     * @return void
      */
-    public function updateRole(Role $role, array $data): bool;
+    public function updateRole(Role $role, array $data): void;
 
     /**
      * @param  Role  $role
-     * @return bool
+     * @return void
      */
-    public function destroyRole(Role $role): bool;
+    public function destroyRole(Role $role): void;
 }

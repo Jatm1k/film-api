@@ -24,6 +24,13 @@ class FilmResourceTest extends TestCase
         'trailer',
     ];
 
+    private array $filmMinifiedStructure = [
+        'title',
+        'production_year',
+        'duration',
+        'poster',
+    ];
+
     protected function setUp(): void
     {
         parent::setUp();
@@ -39,7 +46,7 @@ class FilmResourceTest extends TestCase
         $response
             ->assertStatus(200)
             ->assertHeader('Content-Type', 'application/json')
-            ->assertJsonStructure(['*' => $this->filmStructure]);
+            ->assertJsonStructure(['*' => $this->filmMinifiedStructure]);
     }
 
     public function test_film_show(): void
@@ -152,7 +159,7 @@ class FilmResourceTest extends TestCase
         auth()->login($user);
         $this->assertTrue(auth()->check());
 
-        $film = Film::factory(1)->create()->first();
+        $film = Film::factory()->createOne();
 
         $filmData = [
             'title' => 'Fight Club',
@@ -169,7 +176,8 @@ class FilmResourceTest extends TestCase
             ->assertOk()
             ->assertHeader('Content-Type', 'application/json')
             ->assertJson([
-                'status' => true
+                'status' => __('response.status.success'),
+                'message' => __('response.message.updated'),
             ]);
 
         $this->assertDatabaseMissing(
@@ -193,7 +201,7 @@ class FilmResourceTest extends TestCase
         auth()->login($user);
         $this->assertTrue(auth()->check());
 
-        $film = Film::factory(1)->create()->first();
+        $film = Film::factory()->createOne();
 
         $filmData = [
             'title' => 'Fight Club',
@@ -230,7 +238,7 @@ class FilmResourceTest extends TestCase
     {
         $this->assertFalse(auth()->check());
 
-        $film = Film::factory(1)->create()->first();
+        $film = Film::factory()->createOne();
 
         $filmData = [
             'title' => 'Fight Club',
@@ -259,6 +267,152 @@ class FilmResourceTest extends TestCase
             'films',
             [
                 'title' => $filmData['title'],
+            ]
+        );
+    }
+
+    public function test_film_success_admin_destroy(): void
+    {
+        $user = User::factory()->createOne(['role_id' => Role::Admin->getId()]);
+        auth()->login($user);
+        $this->assertTrue(auth()->check());
+
+        $film = Film::factory()->createOne();
+
+        $response = $this->delete("/api/v1/films/{$film->id}");
+
+        $response
+            ->assertOk()
+            ->assertHeader('Content-Type', 'application/json')
+            ->assertJson([
+                'status' => __('response.status.success'),
+                'message' => __('response.message.destroyed'),
+            ]);
+
+        $this->assertDatabaseMissing(
+            'films',
+            [
+                'id' => $film->id,
+            ]
+        );
+    }
+
+    public function test_film_failed_user_destroy(): void
+    {
+        $user = User::factory()->createOne(['role_id' => Role::Viewer->getId()]);
+        auth()->login($user);
+        $this->assertTrue(auth()->check());
+
+        $film = Film::factory()->createOne();
+
+        $response = $this->delete("/api/v1/films/{$film->id}");
+
+        $response
+            ->assertForbidden()
+            ->assertHeader('Content-Type', 'application/json')
+            ->assertJson([
+                'message' => __('auth.forbidden'),
+            ]);
+
+        $this->assertDatabaseHas(
+            'films',
+            [
+                'id' => $film->id,
+            ]
+        );
+    }
+
+    public function test_film_failed_no_login_destroy(): void
+    {
+        $this->assertFalse(auth()->check());
+
+        $film = Film::factory()->createOne();
+
+        $response = $this->delete("/api/v1/films/{$film->id}");
+
+        $response
+            ->assertUnauthorized()
+            ->assertHeader('Content-Type', 'application/json')
+            ->assertJson([
+                'message' => __('auth.unauthenticated'),
+            ]);
+
+        $this->assertDatabaseHas(
+            'films',
+            [
+                'id' => $film->id,
+            ]
+        );
+    }
+
+    public function test_film_watch(): void
+    {
+        $user = User::factory()->createOne(['role_id' => Role::Viewer->getId()]);
+        auth()->login($user);
+        $this->assertTrue(auth()->check());
+
+        $film = Film::factory()->createOne();
+
+        $response = $this->post("/api/v1/films/{$film->id}/watch");
+
+        $response
+            ->assertOk()
+            ->assertHeader('Content-Type', 'application/json')
+            ->assertJson([
+                'status' => __('response.status.success'),
+                'message' => __('film.message.watch'),
+            ]);
+
+        $this->assertDatabaseHas(
+            'film_user',
+            [
+                'film_id' => $film->id,
+                'user_id' => $user->id,
+            ]
+        );
+    }
+
+    public function test_film_unwatch(): void
+    {
+        $user = User::factory()->createOne(['role_id' => Role::Viewer->getId()]);
+        auth()->login($user);
+        $this->assertTrue(auth()->check());
+
+        $film = Film::factory()->createOne();
+
+        $response = $this->post("/api/v1/films/{$film->id}/watch");
+
+        $response
+            ->assertOk()
+            ->assertHeader('Content-Type', 'application/json')
+            ->assertJson([
+                'status' => __('response.status.success'),
+                'message' => __('film.message.watch'),
+            ]);
+
+        $this->assertDatabaseHas(
+            'film_user',
+            [
+                'film_id' => $film->id,
+                'user_id' => $user->id,
+            ]
+        );
+
+        $response = $this->delete("/api/v1/films/{$film->id}/unwatch");
+
+        $response
+            ->assertOk()
+            ->assertHeader('Content-Type', 'application/json')
+            ->assertJson([
+                'status' => __('response.status.success'),
+                'message' => __('film.message.unwatch'),
+            ]);
+
+        $this->assertDatabaseMissing(
+            'film_user',
+            [
+                'film_id' => $film->id,
+                'user_id' => $user->id,
             ]
         );
     }
