@@ -3,6 +3,7 @@
 namespace App\Services\API\v1\Auth;
 
 use App\Contracts\API\v1\Auth\AuthContract;
+use App\Facades\ExceptionHelper;
 use App\Models\API\v1\User;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
@@ -23,9 +24,7 @@ class AuthService implements AuthContract
     public function login(array $userData): User
     {
         if (!Auth::attempt($userData)) {
-            throw ValidationException::withMessages([
-                'login' => [__('auth.failed')]
-            ]);
+            ExceptionHelper::make(__('auth.failed'), 422);
         }
 
         return auth()->user();
