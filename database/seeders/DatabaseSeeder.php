@@ -17,11 +17,8 @@ class DatabaseSeeder extends Seeder
         $this->call([
             FilmSeeder::class,
             RoleSeeder::class,
-        ]);
-
-        User::factory()->createOne([
-            'login' => 'admin',
-            'role_id' => Role::Admin->getId()
+            UserSeeder::class,
+            ReviewSeeder::class,
         ]);
     }
 }
