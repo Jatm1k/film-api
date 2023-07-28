@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\API\v1\FilmController;
+use App\Http\Controllers\API\v1\ReviewController;
 use App\Http\Controllers\API\v1\RoleController;
 use App\Http\Controllers\API\v1\UserController;
 use Illuminate\Support\Facades\Route;
@@ -20,16 +21,19 @@ use Illuminate\Support\Facades\Route;
 Route::apiResources([
     'films' => FilmController::class,
     'roles' => RoleController::class,
+    'reviews' => ReviewController::class,
 ]);
 
 Route::controller(FilmController::class)->prefix('films')->middleware('auth')->group(function () {
     Route::post('/{film}/watch', 'watch');
     Route::delete('/{film}/unwatch', 'unwatch');
+    Route::get('/{film}/reviews', 'getReviews');
 });
 
 Route::controller(UserController::class)->middleware('auth')->group(function () {
     Route::get('/profile', 'profile');
     Route::get('/watched', 'watched');
+    Route::get('/my-reviews', 'getReviews');
 });
 
 
