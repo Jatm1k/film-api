@@ -6,9 +6,14 @@ use App\Contracts\API\v1\Files\FilesHelper;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;
 
-class FilesService implements FilesHelper
+class FilesService
 {
 
+    /**
+     * @param string|UploadedFile $file
+     * @param string $dir
+     * @return string
+     */
     public function uploadFile(string|UploadedFile $file, string $dir): string
     {
         if (is_string($file)) {
@@ -19,21 +24,34 @@ class FilesService implements FilesHelper
         return Storage::url($uploadedFile);
     }
 
+    /**
+     * @param array|null $files
+     * @param string $dir
+     * @return array
+     */
     public function uploadFiles(?array $files, string $dir): array
     {
         return collect($files)->map(fn($file) => $this->uploadFile($file, $dir))->toArray();
     }
 
-    public function deleteFile(string $file): void
+    /**
+     * @param string $fileUrl
+     * @return void
+     */
+    public function deleteFile(string $fileUrl): void
     {
-        $filePath = get_file_path($file);
+        $filePath = get_file_path($fileUrl);
         if (Storage::exists($filePath)) {
             Storage::delete($filePath);
         }
     }
 
-    public function deleteFiles(array $files): void
+    /**
+     * @param array $fileUrls
+     * @return void
+     */
+    public function deleteFiles(array $fileUrls): void
     {
-        collect($files)->each(fn($file) => $this->deleteFile($file));
+        collect($fileUrls)->each(fn($fileUrl) => $this->deleteFile($fileUrl));
     }
 }

@@ -8,6 +8,7 @@ use App\Http\Requests\API\v1\Film\StoreFilmRequest;
 use App\Http\Requests\API\v1\Film\UpdateFilmRequest;
 use App\Http\Resources\API\v1\Film\FilmMinifiedResource;
 use App\Http\Resources\API\v1\Film\FilmResource;
+use App\Http\Resources\API\v1\Review\ReviewResource;
 use App\Models\API\v1\Film;
 use Illuminate\Http\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
@@ -94,5 +95,12 @@ class FilmController extends Controller
             'status' => __('response.status.success'),
             'message' => __('film.message.unwatch'),
         ]);
+    }
+
+    public function getReviews(Film $film)
+    {
+        return response()->json(
+            ReviewResource::collection($film->reviews)
+        );
     }
 }
