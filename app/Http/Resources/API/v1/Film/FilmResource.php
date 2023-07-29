@@ -25,6 +25,7 @@ class FilmResource extends JsonResource
             'images' => $this->images,
             'trailer' => $this->trailer,
             'reviews' => ReviewMinifiedResource::collection($this->reviews),
+            'rating' => $this->rating,
         ];
     }
 }

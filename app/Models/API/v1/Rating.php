@@ -6,16 +6,14 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-class Review extends Model
+class Rating extends Model
 {
     use HasFactory;
 
     protected $fillable = [
-        'title',
-        'text',
-        'type',
         'film_id',
         'user_id',
+        'rating',
     ];
 
     public function film(): BelongsTo

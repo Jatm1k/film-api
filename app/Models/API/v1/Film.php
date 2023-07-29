@@ -2,6 +2,7 @@
 
 namespace App\Models\API\v1;
 
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
@@ -32,5 +33,20 @@ class Film extends Model
     public function reviews(): HasMany
     {
         return $this->hasMany(Review::class);
+    }
+
+    public function ratings(): HasMany
+    {
+        return $this->hasMany(Rating::class);
+    }
+
+    public function rating(): Attribute
+    {
+        return Attribute::make(
+            get: fn() => [
+                'value' => round($this->ratings()->avg('rating'), 1),
+                'count' => $this->ratings()->count('rating'),
+            ]
+        );
     }
 }

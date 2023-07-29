@@ -16,19 +16,23 @@ class FilmResourceTest extends TestCase
     use RefreshDatabase;
 
     private array $filmStructure = [
+        'id',
         'title',
         'production_year',
         'duration',
         'poster',
         'images',
         'trailer',
+        'rating',
     ];
 
     private array $filmMinifiedStructure = [
+        'id',
         'title',
         'production_year',
         'duration',
         'poster',
+        'rating',
     ];
 
     protected function setUp(): void

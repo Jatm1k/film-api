@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\API\v1\FilmController;
+use App\Http\Controllers\API\v1\RatingController;
 use App\Http\Controllers\API\v1\ReviewController;
 use App\Http\Controllers\API\v1\RoleController;
 use App\Http\Controllers\API\v1\UserController;
@@ -22,6 +23,7 @@ Route::apiResources([
     'films' => FilmController::class,
     'roles' => RoleController::class,
     'reviews' => ReviewController::class,
+    'ratings' => RatingController::class,
 ]);
 
 Route::controller(FilmController::class)->prefix('films')->middleware('auth')->group(function () {
