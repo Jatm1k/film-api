@@ -7,9 +7,14 @@ use App\Enums\API\v1\Directory;
 use App\Facades\ExceptionHelper;
 use App\Facades\FilesHelper;
 use App\Models\API\v1\Film;
+use App\Models\API\v1\Rating;
+use App\Traits\API\v1\HasWatch;
 
 class FilmsService implements FilmsContract
 {
+
+    use HasWatch;
+
     public function storeFilm(array $data): Film
     {
         $data['poster'] = FilesHelper::uploadFile($data['poster'], Directory::FilmsPosters->value);
@@ -38,8 +43,7 @@ class FilmsService implements FilmsContract
         if ($this->isWatched($film)) {
             ExceptionHelper::make(__('film.error.watched'), 422);
         }
-
-        $film->viewers()->attach(['user_id' => auth()->id()]);
+        $this->watching($film);
     }
 
     public function unwatch(Film $film): void
@@ -47,12 +51,15 @@ class FilmsService implements FilmsContract
         if (!$this->isWatched($film)) {
             ExceptionHelper::make(__('film.error.unwatched'), 422);
         }
-
-        $film->viewers()->detach(['user_id' => auth()->id()]);
+        $this->clearUserFilmInteraction($film);
+        $this->unwatching($film);
     }
 
-    private function isWatched(Film $film): bool
+
+    private function clearUserFilmInteraction(Film $film): void
     {
-        return $film->viewers()->where('user_id', auth()->id())->exists();
+        $film->ratings->where('user_id', auth()->id())->first()?->delete();
+        $film->reviews->where('user_id', auth()->id())->first()?->delete();
     }
+
 }

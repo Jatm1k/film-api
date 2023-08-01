@@ -26,7 +26,7 @@ Route::apiResources([
     'ratings' => RatingController::class,
 ]);
 
-Route::controller(FilmController::class)->prefix('films')->middleware('auth')->group(function () {
+Route::controller(FilmController::class)->prefix('films')->group(function () {
     Route::post('/{film}/watch', 'watch');
     Route::delete('/{film}/unwatch', 'unwatch');
     Route::get('/{film}/reviews', 'getReviews');

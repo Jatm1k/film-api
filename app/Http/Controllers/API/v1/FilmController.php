@@ -21,7 +21,8 @@ class FilmController extends Controller
     {
         $this->service = $service;
 
-        $this->middleware(['auth', 'role:admin'])->only(['store', 'update', 'destroy']);
+        $this->middleware('auth')->except('index', 'show', 'getReviews');
+        $this->middleware('role:admin')->only(['store', 'update', 'destroy']);
     }
 
     /**
