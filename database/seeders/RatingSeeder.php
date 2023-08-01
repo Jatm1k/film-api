@@ -2,13 +2,13 @@
 
 namespace Database\Seeders;
 
-use App\Models\API\v1\Review;
+use App\Models\API\v1\Rating;
 use App\Models\API\v1\User;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Seeder;
 
-class ReviewSeeder extends Seeder
+class RatingSeeder extends Seeder
 {
     /**
      * Run the database seeds.
@@ -26,7 +26,7 @@ class ReviewSeeder extends Seeder
     private function ratingForWatched(Collection $films, $user)
     {
         $films->each(
-            fn($film) => Review::factory()->for($film)->for($user, 'author')->create()
+            fn($film) => Rating::factory()->for($film)->for($user, 'author')->create()
         );
     }
 }

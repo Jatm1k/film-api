@@ -1,13 +1,14 @@
 <?php
 
-namespace App\Http\Resources\API\v1\Film;
+namespace App\Http\Resources\API\v1\Rating;
 
+use App\Http\Resources\API\v1\Film\FilmMinifiedResource;
+use App\Http\Resources\API\v1\UserResource;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class FilmMinifiedResource extends JsonResource
+class RatingResource extends JsonResource
 {
-
     /**
      * Transform the resource into an array.
      *
@@ -17,10 +18,8 @@ class FilmMinifiedResource extends JsonResource
     {
         return [
             'id' => $this->id,
-            'title' => $this->title,
-            'production_year' => $this->production_year,
-            'duration' => $this->duration,
-            'poster' => $this->poster,
+            'film' => new FilmMinifiedResource($this->film),
+            'author' => new UserResource($this->author),
             'rating' => $this->rating,
         ];
     }

@@ -17,11 +17,15 @@ class FilmFactory extends Factory
     public function definition(): array
     {
         return [
-            'title' => ucfirst(fake()->words(rand(1, 4), true)),
+            'title' => ucfirst(fake()->unique()->words(rand(1, 4), true)),
             'production_year' => fake()->year(),
             'duration' => fake()->time('H:i'),
             'poster' => 'https://via.placeholder.com/300x450',
-            'images' => [],
+            'images' => [
+                'https://via.placeholder.com/1920x1080',
+                'https://via.placeholder.com/1920x1080',
+                'https://via.placeholder.com/1920x1080',
+            ],
             'trailer' => null,
         ];
     }
