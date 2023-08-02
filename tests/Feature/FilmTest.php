@@ -11,7 +11,7 @@ use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;
 use Tests\TestCase;
 
-class FilmResourceTest extends TestCase
+class FilmTest extends TestCase
 {
     use RefreshDatabase;
 

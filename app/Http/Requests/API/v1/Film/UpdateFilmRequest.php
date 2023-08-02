@@ -17,6 +17,8 @@ class UpdateFilmRequest extends FormRequest
             'images' => ['required', 'array'],
             'images.*' => [new ImageOrUrl()],
             'trailer' => ['nullable', 'file'],
+            'genres' => ['required', 'array'],
+            'genres.*' => ['int', 'exists:genres,id'],
         ];
     }
 }

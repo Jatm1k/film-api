@@ -40,6 +40,11 @@ class Film extends Model
         return $this->hasMany(Rating::class);
     }
 
+    public function genres(): BelongsToMany
+    {
+        return $this->belongsToMany(Genre::class);
+    }
+
     public function rating(): Attribute
     {
         return Attribute::make(
