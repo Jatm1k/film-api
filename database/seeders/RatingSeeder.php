@@ -15,9 +15,9 @@ class RatingSeeder extends Seeder
      */
     public function run(): void
     {
-        User::with('watched')->get()->each(
+        User::with('watchedFilms')->get()->each(
             fn(User $user) => $this->ratingForWatched(
-                $user->watched->random(rand(1, count($user->watched))),
+                $user->watchedFilms->random(rand(1, count($user->watchedFilms))),
                 $user
             )
         );

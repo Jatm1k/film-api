@@ -98,6 +98,24 @@ class FilmController extends Controller
         ]);
     }
 
+    public function favorite(Film $film)
+    {
+        $this->service->favorite($film);
+        return response()->json([
+            'status' => __('response.status.success'),
+            'message' => __('film.message.favorite'),
+        ]);
+    }
+
+    public function unfavorite(Film $film)
+    {
+        $this->service->unfavorite($film);
+        return response()->json([
+            'status' => __('response.status.success'),
+            'message' => __('film.message.unfavorite'),
+        ]);
+    }
+
     public function getReviews(Film $film)
     {
         return response()->json(

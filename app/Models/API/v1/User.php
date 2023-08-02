@@ -54,9 +54,14 @@ class User extends Authenticatable
         return $this->belongsTo(Role::class);
     }
 
-    public function watched(): BelongsToMany
+    public function watchedFilms(): BelongsToMany
     {
-        return $this->belongsToMany(Film::class, 'film_user');
+        return $this->belongsToMany(Film::class, 'film_user_watched');
+    }
+
+    public function favoriteFilms(): BelongsToMany
+    {
+        return $this->belongsToMany(Film::class, 'film_user_favorite');
     }
 
     public function reviews(): HasMany

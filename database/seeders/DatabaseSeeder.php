@@ -20,7 +20,8 @@ class DatabaseSeeder extends Seeder
             FilmSeeder::class,
             FilmGenreSeeder::class,
             UserSeeder::class,
-            FilmUserSeeder::class,
+            FilmUserWatchedSeeder::class,
+            FilmUserFavouriteSeeder::class,
             ReviewSeeder::class,
             RatingSeeder::class,
         ]);

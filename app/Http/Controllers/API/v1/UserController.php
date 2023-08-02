@@ -14,10 +14,17 @@ class UserController extends Controller
         return response()->json(new UserResource(auth()->user()));
     }
 
-    public function watched()
+    public function watchedFilms()
     {
         return response()->json(
-            FilmMinifiedResource::collection(auth()->user()->watched)
+            FilmMinifiedResource::collection(auth()->user()->watchedFilms)
+        );
+    }
+
+    public function favoriteFilms()
+    {
+        return response()->json(
+            FilmMinifiedResource::collection(auth()->user()->favoriteFilms)
         );
     }
 
