@@ -30,13 +30,18 @@ Route::apiResources([
 Route::controller(FilmController::class)->prefix('films')->group(function () {
     Route::post('/{film}/watch', 'watch');
     Route::delete('/{film}/unwatch', 'unwatch');
+
+    Route::post('/{film}/favorite', 'favorite');
+    Route::delete('/{film}/unfavorite', 'unfavorite');
+
     Route::get('/{film}/reviews', 'getReviews');
 });
 
 Route::controller(UserController::class)->middleware('auth')->group(
     function () {
         Route::get('/profile', 'profile');
-        Route::get('/watched', 'watched');
+        Route::get('/watched', 'watchedFilms');
+        Route::get('/favorite', 'favoriteFilms');
         Route::get('/my-reviews', 'getReviews');
     }
 );

@@ -4,6 +4,7 @@ namespace Tests\Feature;
 
 use App\Enums\API\v1\Role;
 use App\Models\API\v1\Film;
+use App\Models\API\v1\Genre;
 use App\Models\API\v1\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
@@ -24,6 +25,7 @@ class FilmTest extends TestCase
         'images',
         'trailer',
         'rating',
+        'genres',
     ];
 
     private array $filmMinifiedStructure = [
@@ -33,6 +35,7 @@ class FilmTest extends TestCase
         'duration',
         'poster',
         'rating',
+        'genres',
     ];
 
     protected function setUp(): void
@@ -46,6 +49,32 @@ class FilmTest extends TestCase
     public function test_film_index(): void
     {
         $response = $this->get('/api/v1/films');
+
+        $response
+            ->assertStatus(200)
+            ->assertHeader('Content-Type', 'application/json')
+            ->assertJsonStructure(['*' => $this->filmMinifiedStructure]);
+    }
+
+    public function test_user_watched()
+    {
+        auth()->loginUsingId(1);
+        $this->assertTrue(auth()->check());
+
+        $response = $this->get('/api/v1/watched');
+
+        $response
+            ->assertStatus(200)
+            ->assertHeader('Content-Type', 'application/json')
+            ->assertJsonStructure(['*' => $this->filmMinifiedStructure]);
+    }
+
+    public function test_user_favorite()
+    {
+        auth()->loginUsingId(1);
+        $this->assertTrue(auth()->check());
+
+        $response = $this->get('/api/v1/favorite');
 
         $response
             ->assertStatus(200)
@@ -82,6 +111,7 @@ class FilmTest extends TestCase
             'poster' => $filmPoster,
             'images' => $filmImages,
             'trailer' => null,
+            'genres' => Genre::get()->random(3)->pluck('id')->toArray()
         ];
 
         $response = $this->post('/api/v1/films', $filmData);
@@ -114,6 +144,7 @@ class FilmTest extends TestCase
             'poster' => $filmPoster,
             'images' => $filmImages,
             'trailer' => null,
+            'genres' => Genre::get()->random(3)->pluck('id')->toArray()
         ];
 
         $response = $this->post('/api/v1/films', $filmData);
@@ -144,6 +175,7 @@ class FilmTest extends TestCase
             'poster' => $filmPoster,
             'images' => $filmImages,
             'trailer' => null,
+            'genres' => Genre::get()->random(3)->pluck('id')->toArray()
         ];
 
         $response = $this->post('/api/v1/films', $filmData);
@@ -172,6 +204,7 @@ class FilmTest extends TestCase
             'poster' => UploadedFile::fake()->image('fake-image.jpg'),
             'images' => [UploadedFile::fake()->image('fake-image2.jpg')],
             'trailer' => null,
+            'genres' => Genre::get()->random(3)->pluck('id')->toArray()
         ];
 
         $response = $this->put("/api/v1/films/{$film->id}", $filmData);
@@ -214,6 +247,7 @@ class FilmTest extends TestCase
             'poster' => UploadedFile::fake()->image('fake-image.jpg'),
             'images' => [UploadedFile::fake()->image('fake-image2.jpg')],
             'trailer' => null,
+            'genres' => Genre::get()->random(3)->pluck('id')->toArray()
         ];
 
         $response = $this->put("/api/v1/films/{$film->id}", $filmData);
@@ -251,6 +285,7 @@ class FilmTest extends TestCase
             'poster' => UploadedFile::fake()->image('fake-image.jpg'),
             'images' => [UploadedFile::fake()->image('fake-image2.jpg')],
             'trailer' => null,
+            'genres' => Genre::get()->random(3)->pluck('id')->toArray()
         ];
 
         $response = $this->put("/api/v1/films/{$film->id}", $filmData);
@@ -368,7 +403,7 @@ class FilmTest extends TestCase
             ]);
 
         $this->assertDatabaseHas(
-            'film_user',
+            'film_user_watched',
             [
                 'film_id' => $film->id,
                 'user_id' => $user->id,
@@ -395,7 +430,7 @@ class FilmTest extends TestCase
             ]);
 
         $this->assertDatabaseHas(
-            'film_user',
+            'film_user_watched',
             [
                 'film_id' => $film->id,
                 'user_id' => $user->id,
@@ -413,7 +448,79 @@ class FilmTest extends TestCase
             ]);
 
         $this->assertDatabaseMissing(
-            'film_user',
+            'film_user_watched',
+            [
+                'film_id' => $film->id,
+                'user_id' => $user->id,
+            ]
+        );
+    }
+
+    public function test_film_favorite(): void
+    {
+        $user = User::factory()->createOne(['role_id' => Role::Viewer->getId()]);
+        auth()->login($user);
+        $this->assertTrue(auth()->check());
+
+        $film = Film::factory()->createOne();
+
+        $response = $this->post("/api/v1/films/{$film->id}/favorite");
+
+        $response
+            ->assertOk()
+            ->assertHeader('Content-Type', 'application/json')
+            ->assertJson([
+                'status' => __('response.status.success'),
+                'message' => __('film.message.favorite'),
+            ]);
+
+        $this->assertDatabaseHas(
+            'film_user_favorite',
+            [
+                'film_id' => $film->id,
+                'user_id' => $user->id,
+            ]
+        );
+    }
+
+    public function test_film_unfavorite(): void
+    {
+        $user = User::factory()->createOne(['role_id' => Role::Viewer->getId()]);
+        auth()->login($user);
+        $this->assertTrue(auth()->check());
+
+        $film = Film::factory()->createOne();
+
+        $response = $this->post("/api/v1/films/{$film->id}/favorite");
+
+        $response
+            ->assertOk()
+            ->assertHeader('Content-Type', 'application/json')
+            ->assertJson([
+                'status' => __('response.status.success'),
+                'message' => __('film.message.favorite'),
+            ]);
+
+        $this->assertDatabaseHas(
+            'film_user_favorite',
+            [
+                'film_id' => $film->id,
+                'user_id' => $user->id,
+            ]
+        );
+
+        $response = $this->delete("/api/v1/films/{$film->id}/unfavorite");
+
+        $response
+            ->assertOk()
+            ->assertHeader('Content-Type', 'application/json')
+            ->assertJson([
+                'status' => __('response.status.success'),
+                'message' => __('film.message.unfavorite'),
+            ]);
+
+        $this->assertDatabaseMissing(
+            'film_user_favorite',
             [
                 'film_id' => $film->id,
                 'user_id' => $user->id,

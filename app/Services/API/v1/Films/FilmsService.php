@@ -58,11 +58,33 @@ class FilmsService implements FilmsContract
         $this->unwatching($film);
     }
 
+    public function favorite(Film $film): void
+    {
+        if ($this->isFavorite($film)) {
+            ExceptionHelper::make(__('film.error.favorited'), 422);
+        }
+        $film->favouriteByUsers()->attach(auth()->id());
+    }
+
+    public function unfavorite(Film $film): void
+    {
+        if (!$this->isFavorite($film)) {
+            ExceptionHelper::make(__('film.error.unfavorited'), 422);
+        }
+        $film->favouriteByUsers()->detach(auth()->id());
+    }
+
 
     private function clearUserFilmInteraction(Film $film): void
     {
         $film->ratings->where('user_id', auth()->id())->first()?->delete();
         $film->reviews->where('user_id', auth()->id())->first()?->delete();
     }
+
+    private function isFavorite(Film $film): bool
+    {
+        return $film->favouriteByUsers()->where('user_id', auth()->id())->exists();
+    }
+
 
 }

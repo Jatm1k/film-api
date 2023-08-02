@@ -25,9 +25,14 @@ class Film extends Model
         'images' => 'array'
     ];
 
-    public function viewers(): BelongsToMany
+    public function watchedByUsers(): BelongsToMany
     {
-        return $this->belongsToMany(User::class, 'film_user');
+        return $this->belongsToMany(User::class, 'film_user_watched');
+    }
+
+    public function favouriteByUsers(): BelongsToMany
+    {
+        return $this->belongsToMany(User::class, 'film_user_favorite');
     }
 
     public function reviews(): HasMany

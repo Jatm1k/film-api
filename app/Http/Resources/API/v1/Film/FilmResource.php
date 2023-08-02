@@ -44,7 +44,7 @@ class FilmResource extends JsonResource
 
     private function isWatched()
     {
-        return $this->viewers()->where('user_id', auth()->id())->exists();
+        return $this->watchedByUsers()->where('user_id', auth()->id())->exists();
     }
 
     private function userRating()
