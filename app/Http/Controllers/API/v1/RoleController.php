@@ -4,6 +4,7 @@ namespace App\Http\Controllers\API\v1;
 
 use App\Contracts\API\v1\Roles\RolesContract;
 use App\Http\Controllers\Controller;
+
 use App\Http\Requests\API\v1\Role\StoreRoleRequest;
 use App\Http\Requests\API\v1\Role\UpdateRoleRequest;
 use App\Http\Resources\API\v1\RoleResource;

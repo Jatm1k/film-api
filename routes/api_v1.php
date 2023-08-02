@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\API\v1\FilmController;
+use App\Http\Controllers\API\v1\GenreController;
 use App\Http\Controllers\API\v1\RatingController;
 use App\Http\Controllers\API\v1\ReviewController;
 use App\Http\Controllers\API\v1\RoleController;
@@ -18,12 +19,12 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-
 Route::apiResources([
     'films' => FilmController::class,
     'roles' => RoleController::class,
     'reviews' => ReviewController::class,
     'ratings' => RatingController::class,
+    'genres' => GenreController::class,
 ]);
 
 Route::controller(FilmController::class)->prefix('films')->group(function () {
@@ -32,10 +33,12 @@ Route::controller(FilmController::class)->prefix('films')->group(function () {
     Route::get('/{film}/reviews', 'getReviews');
 });
 
-Route::controller(UserController::class)->middleware('auth')->group(function () {
-    Route::get('/profile', 'profile');
-    Route::get('/watched', 'watched');
-    Route::get('/my-reviews', 'getReviews');
-});
+Route::controller(UserController::class)->middleware('auth')->group(
+    function () {
+        Route::get('/profile', 'profile');
+        Route::get('/watched', 'watched');
+        Route::get('/my-reviews', 'getReviews');
+    }
+);
 
 

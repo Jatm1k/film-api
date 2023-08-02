@@ -19,7 +19,9 @@ class FilmsService implements FilmsContract
     {
         $data['poster'] = FilesHelper::uploadFile($data['poster'], Directory::FilmsPosters->value);
         $data['images'] = FilesHelper::uploadFiles($data['images'], Directory::FilmsImages->value);
-        return Film::query()->create($data);
+        $film = Film::query()->create($data);
+        $film->genres()->attach($data['genres']);
+        return $film;
     }
 
     public function updateFilm(Film $film, array $data): void
@@ -28,6 +30,7 @@ class FilmsService implements FilmsContract
         $data['images'] = FilesHelper::uploadFiles($data['images'], Directory::FilmsImages->value);
         FilesHelper::deleteFiles(array_diff($film->images, $data['images']));
         $film->update($data);
+        $film->genres()->sync($data['genres']);
     }
 
     public function destroyFilm(Film $film): void

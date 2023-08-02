@@ -16,6 +16,8 @@ class StoreFilmRequest extends FormRequest
             'images' => ['required', 'array'],
             'images.*' => ['image'],
             'trailer' => ['nullable', 'file'],
+            'genres' => ['required', 'array'],
+            'genres.*' => ['int', 'exists:genres,id'],
         ];
     }
 }
