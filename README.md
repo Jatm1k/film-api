@@ -1,4 +1,4 @@
-# Film API v0.6
+# Film API v0.7
 
 Учебный проект на Laravel
 
@@ -17,7 +17,7 @@
 - [x] Функционал оценки фильмов
 - [x] Разделение фильмов по жанрам
 - [x] Избранное
-- [ ] Группировка фильмов по категориям
+- [x] Группировка фильмов по категориям
 - [ ] Рекомендации фильмов
 - [ ] Система друзей
 
@@ -30,6 +30,7 @@
 4. Выполнение следующих команд для нормальной работы API:
 
 ```
+composer install
 php artisan migrate --seed
 php artisan storage:link
 ```
@@ -49,6 +50,108 @@ php artisan storage:link
 #### Запрос:
 
 `GET /api/v1/films`
+
+#### Ответ:
+
+```
+[
+    {
+        "id": 1,
+        "title": "Id natus",
+        "production_year": "1986",
+        "duration": "14:30:00",
+        "poster": "https://via.placeholder.com/300x450",
+        "rating": {
+            "value": 8,
+            "count": 3
+        },
+        "genres": [
+            {
+                "id": 1,
+                "name": "Qq"
+            },
+            {...}
+        ]
+    },
+    {...},
+]
+```
+
+---
+
+⚪ **Получение списка популярных фильмов**
+
+#### Запрос:
+
+`GET /api/v1/films/popular`
+
+#### Ответ:
+
+```
+[
+    {
+        "id": 1,
+        "title": "Id natus",
+        "production_year": "1986",
+        "duration": "14:30:00",
+        "poster": "https://via.placeholder.com/300x450",
+        "rating": {
+            "value": 8,
+            "count": 3
+        },
+        "genres": [
+            {
+                "id": 1,
+                "name": "Qq"
+            },
+            {...}
+        ]
+    },
+    {...},
+]
+```
+
+---
+
+⚪ **Получение списка фильмов с большим рейтингом**
+
+#### Запрос:
+
+`GET /api/v1/films/big-rating`
+
+#### Ответ:
+
+```
+[
+    {
+        "id": 1,
+        "title": "Id natus",
+        "production_year": "1986",
+        "duration": "14:30:00",
+        "poster": "https://via.placeholder.com/300x450",
+        "rating": {
+            "value": 8,
+            "count": 3
+        },
+        "genres": [
+            {
+                "id": 1,
+                "name": "Qq"
+            },
+            {...}
+        ]
+    },
+    {...},
+]
+```
+
+---
+
+⚪ **Получение списка новых фильмов**
+
+#### Запрос:
+
+`GET /api/v1/films/new`
 
 #### Ответ:
 
@@ -125,7 +228,28 @@ php artisan storage:link
     "rating": {
         "value": 4.5,
         "count": 4
-    }
+    },
+    "watch_with_it": [
+        {
+            "id": 14,
+            "title": "Esse quis",
+            "production_year": "2017",
+            "duration": "09:29:00",
+            "poster": "https://via.placeholder.com/300x450",
+            "rating": {
+                "value": 6,
+                "count": 3
+            },
+            "genres": [
+                {
+                    "id": 1,
+                    "name": "est"
+                },
+                {...}
+            ]
+        },
+        {...}
+    ]
 }
 ```
 
@@ -337,6 +461,13 @@ axios.get('/sanctum/csrf-cookie').then(response => {
 
 `POST /login`
 
+```
+{
+    "login": "natus",
+    "password": "password"
+}
+```
+
 #### Ответ:
 
 ```
@@ -356,6 +487,16 @@ axios.get('/sanctum/csrf-cookie').then(response => {
 #### Запрос:
 
 `POST /register`
+
+```
+{
+    "name": "Голубев Эрик Александрович",
+    "login": "natus",
+    "email": "fokina.innokentii@example.org",
+    "password": "password",
+    "password_confirmation": "password"
+}
+```
 
 #### Ответ:
 
