@@ -19,15 +19,11 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::apiResources([
-    'films' => FilmController::class,
-    'roles' => RoleController::class,
-    'reviews' => ReviewController::class,
-    'ratings' => RatingController::class,
-    'genres' => GenreController::class,
-]);
-
 Route::controller(FilmController::class)->prefix('films')->group(function () {
+    Route::get('/popular', 'popular');
+    Route::get('/big-rating', 'bigRating');
+    Route::get('/new', 'new');
+
     Route::post('/{film}/watch', 'watch');
     Route::delete('/{film}/unwatch', 'unwatch');
 
@@ -36,6 +32,15 @@ Route::controller(FilmController::class)->prefix('films')->group(function () {
 
     Route::get('/{film}/reviews', 'getReviews');
 });
+
+Route::apiResources([
+    'films' => FilmController::class,
+    'roles' => RoleController::class,
+    'reviews' => ReviewController::class,
+    'ratings' => RatingController::class,
+    'genres' => GenreController::class,
+]);
+
 
 Route::controller(UserController::class)->middleware('auth')->group(
     function () {

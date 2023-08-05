@@ -16,6 +16,7 @@ class FilmFactory extends Factory
      */
     public function definition(): array
     {
+        $date = fake()->dateTimeInInterval('-5 years', '+5 years');
         return [
             'title' => ucfirst(fake()->unique()->words(rand(1, 4), true)),
             'production_year' => fake()->year(),
@@ -27,6 +28,8 @@ class FilmFactory extends Factory
                 'https://via.placeholder.com/1920x1080',
             ],
             'trailer' => null,
+            'created_at' => $date,
+            'updated_at' => $date,
         ];
     }
 }

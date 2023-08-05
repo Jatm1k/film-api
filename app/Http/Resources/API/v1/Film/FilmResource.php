@@ -28,6 +28,7 @@ class FilmResource extends JsonResource
             'genres' => GenreMinifiedResource::collection($this->genres),
             'reviews' => ReviewMinifiedResource::collection($this->filmReviewsWithoutAuthUserReview()),
             'rating' => $this->rating,
+            'watch_with_it' => FilmMinifiedResource::collection($this->watchWithIt),
             $this->mergeWhen(auth()->check(), [
                 'watched' => $this->isWatched(),
                 'my_rating' => $this->userRating(),

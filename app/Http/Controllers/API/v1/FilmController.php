@@ -21,7 +21,7 @@ class FilmController extends Controller
     {
         $this->service = $service;
 
-        $this->middleware('auth')->except('index', 'show', 'getReviews');
+        $this->middleware('auth')->except('index', 'show', 'getReviews', 'popular', 'bigRating', 'new');
         $this->middleware('role:admin')->only(['store', 'update', 'destroy']);
     }
 
@@ -121,5 +121,32 @@ class FilmController extends Controller
         return response()->json(
             ReviewResource::collection($film->reviews)
         );
+    }
+
+    public function popular()
+    {
+        $films = Film::query()
+            ->popular()
+            ->limit(100)
+            ->get();
+        return response()->json(FilmMinifiedResource::collection($films));
+    }
+
+    public function bigRating()
+    {
+        $films = Film::query()
+            ->bigRating()
+            ->limit(100)
+            ->get();
+        return response()->json(FilmMinifiedResource::collection($films));
+    }
+
+    public function new()
+    {
+        $films = Film::query()
+            ->new()
+            ->limit(100)
+            ->get();
+        return response()->json(FilmMinifiedResource::collection($films));
     }
 }
