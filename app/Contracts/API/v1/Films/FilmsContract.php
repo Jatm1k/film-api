@@ -3,6 +3,7 @@
 namespace App\Contracts\API\v1\Films;
 
 use App\Models\API\v1\Film;
+use Illuminate\Database\Eloquent\Collection;
 
 interface FilmsContract
 {
@@ -48,4 +49,9 @@ interface FilmsContract
      * @return void
      */
     public function unfavorite(Film $film): void;
+
+    /**
+     * @return Collection
+     */
+    public function recommendations(): Collection;
 }

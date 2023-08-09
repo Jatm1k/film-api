@@ -1,4 +1,4 @@
-# Film API v0.7
+# Film API v0.8
 
 Учебный проект на Laravel
 
@@ -18,8 +18,8 @@
 - [x] Разделение фильмов по жанрам
 - [x] Избранное
 - [x] Группировка фильмов по категориям
-- [ ] Рекомендации фильмов
-- [ ] Система друзей
+- [x] Рекомендации фильмов
+- [ ] Система подписок на пользователей
 
 ## Установка:
 
@@ -31,6 +31,7 @@
 
 ```
 composer install
+php artisan key:generate
 php artisan migrate --seed
 php artisan storage:link
 ```
@@ -152,6 +153,40 @@ php artisan storage:link
 #### Запрос:
 
 `GET /api/v1/films/new`
+
+#### Ответ:
+
+```
+[
+    {
+        "id": 1,
+        "title": "Id natus",
+        "production_year": "1986",
+        "duration": "14:30:00",
+        "poster": "https://via.placeholder.com/300x450",
+        "rating": {
+            "value": 8,
+            "count": 3
+        },
+        "genres": [
+            {
+                "id": 1,
+                "name": "Qq"
+            },
+            {...}
+        ]
+    },
+    {...},
+]
+```
+
+---
+
+⚪ **Получение списка рекомендаций** ✅
+
+#### Запрос:
+
+`GET /api/v1/films/recommendations`
 
 #### Ответ:
 
