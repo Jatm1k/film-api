@@ -158,4 +158,13 @@ class FilmController extends Controller
             )
         );
     }
+
+    public function subscriptionsWatched()
+    {
+        return response()->json(
+            FilmMinifiedResource::collection(
+                $this->service->subscriptionsWatched()
+            )
+        );
+    }
 }

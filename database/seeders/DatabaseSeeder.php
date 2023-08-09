@@ -24,6 +24,7 @@ class DatabaseSeeder extends Seeder
             FilmUserFavouriteSeeder::class,
             ReviewSeeder::class,
             RatingSeeder::class,
+            UserSubscriptionsSeeder::class,
         ]);
     }
 }

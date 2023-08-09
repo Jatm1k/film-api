@@ -112,4 +112,18 @@ class FilmsService implements FilmsContract
         }
         return $recommendations;
     }
+
+    public function subscriptionsWatched(): Collection
+    {
+        $subscriptions = auth()->user()->subscriptions;
+        
+        if ($subscriptions->count() < 1) {
+            ExceptionHelper::make(__('user.error.subscription_not_found'), 404);
+        }
+
+        return Film::query()
+            ->whereHas('watchedByUsers', fn($query) => $query->whereIn('user_id', $subscriptions->pluck('id')))
+            ->whereDoesntHave('watchedByUsers', fn($query) => $query->where('id', auth()->id()))
+            ->get();
+    }
 }

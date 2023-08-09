@@ -24,6 +24,7 @@ Route::controller(FilmController::class)->prefix('films')->group(function () {
     Route::get('/big-rating', 'bigRating');
     Route::get('/new', 'new');
     Route::get('/recommendations', 'recommendations');
+    Route::get('/subscriptions-watched', 'subscriptionsWatched');
 
     Route::post('/{film}/watch', 'watch');
     Route::delete('/{film}/unwatch', 'unwatch');
@@ -43,12 +44,20 @@ Route::apiResources([
 ]);
 
 
-Route::controller(UserController::class)->middleware('auth')->group(
+Route::controller(UserController::class)->group(
     function () {
         Route::get('/profile', 'profile');
         Route::get('/watched', 'watchedFilms');
         Route::get('/favorite', 'favoriteFilms');
         Route::get('/my-reviews', 'getReviews');
+    }
+);
+
+Route::controller(UserController::class)->prefix('users')->group(
+    function () {
+        Route::get('/{user}', 'show');
+        Route::post('/{user}', 'subscribe');
+        Route::delete('/{user}', 'unsubscribe');
     }
 );
 
