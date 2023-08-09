@@ -54,4 +54,9 @@ interface FilmsContract
      * @return Collection
      */
     public function recommendations(): Collection;
+
+    /**
+     * @return Collection
+     */
+    public function subscriptionsWatched(): Collection;
 }

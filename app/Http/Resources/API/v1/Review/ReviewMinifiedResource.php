@@ -2,7 +2,8 @@
 
 namespace App\Http\Resources\API\v1\Review;
 
-use App\Http\Resources\API\v1\UserResource;
+use App\Http\Resources\API\v1\User\UserMinifiedResource;
+use App\Http\Resources\API\v1\User\UserResource;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
@@ -20,7 +21,7 @@ class ReviewMinifiedResource extends JsonResource
             'title' => $this->title,
             'text' => $this->text,
             'type' => $this->type,
-            'author' => new UserResource($this->author),
+            'author' => new UserMinifiedResource($this->author),
         ];
     }
 }

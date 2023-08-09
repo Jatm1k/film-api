@@ -3,7 +3,7 @@
 namespace App\Http\Resources\API\v1\Rating;
 
 use App\Http\Resources\API\v1\Film\FilmMinifiedResource;
-use App\Http\Resources\API\v1\UserResource;
+use App\Http\Resources\API\v1\User\UserResource;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 

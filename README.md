@@ -1,4 +1,4 @@
-# Film API v0.8
+# Film API v0.9
 
 Учебный проект на Laravel
 
@@ -19,7 +19,7 @@
 - [x] Избранное
 - [x] Группировка фильмов по категориям
 - [x] Рекомендации фильмов
-- [ ] Система подписок на пользователей
+- [x] Система подписок на пользователей
 
 ## Установка:
 
@@ -187,6 +187,40 @@ php artisan storage:link
 #### Запрос:
 
 `GET /api/v1/films/recommendations`
+
+#### Ответ:
+
+```
+[
+    {
+        "id": 1,
+        "title": "Id natus",
+        "production_year": "1986",
+        "duration": "14:30:00",
+        "poster": "https://via.placeholder.com/300x450",
+        "rating": {
+            "value": 8,
+            "count": 3
+        },
+        "genres": [
+            {
+                "id": 1,
+                "name": "Qq"
+            },
+            {...}
+        ]
+    },
+    {...},
+]
+```
+
+---
+
+⚪ **Получение списка "смотрят друзья"** ✅
+
+#### Запрос:
+
+`GET /api/v1/films/subscriptions-watched`
 
 #### Ответ:
 
@@ -511,7 +545,11 @@ axios.get('/sanctum/csrf-cookie').then(response => {
     "name": "Голубев Эрик Александрович",
     "login": "natus",
     "email": "fokina.innokentii@example.org",
-    "role": "viewer"
+    "role": "viewer",
+    "subscriptions": [],
+    "subscribers": [],
+    "watched_films": [],
+    "reviews": []
 }
 ```
 
@@ -541,7 +579,11 @@ axios.get('/sanctum/csrf-cookie').then(response => {
     "name": "Голубев Эрик Александрович",
     "login": "natus",
     "email": "fokina.innokentii@example.org",
-    "role": "viewer"
+    "role": "viewer",
+    "subscriptions": [],
+    "subscribers": [],
+    "watched_films": [],
+    "reviews": []
 }
 ```
 
@@ -723,7 +765,7 @@ axios.get('/sanctum/csrf-cookie').then(response => {
 }
 ```
 
-### User
+### AuthUser
 
 ⚪ **Получение списка просмотренных фильмов** ✅
 
@@ -906,3 +948,113 @@ axios.get('/sanctum/csrf-cookie').then(response => {
     ]
 }
 ```
+
+### Users
+
+⬜ **Просмотр профиля пользователя**
+
+#### Запрос:
+
+`GET /api/v1/users/{id}`
+
+#### Ответ:
+
+```
+{
+    "id": 1,
+    "name": "Аксёнова Альбина Романовна",
+    "login": "vitae",
+    "email": "qfokin@example.org",
+    "role": "admin",
+    "subscriptions": [
+         {
+            "id": 2,
+            "name": "Русакова Дан Борисович",
+            "login": "tempore",
+            "role": "viewer"
+        },
+        {...}
+    ],
+    "subscribers": [
+         {
+            "id": 2,
+            "name": "Русакова Дан Борисович",
+            "login": "tempore",
+            "role": "viewer"
+        },
+        {...}
+    ],
+    "watched_films": [
+        {
+            "id": 1,
+            "title": "Ea autem amet",
+            "production_year": "1975",
+            "duration": "14:10:00",
+            "poster": "https://via.placeholder.com/300x450",
+            "rating": {
+                "value": 7,
+                "count": 4
+            },
+            "genres": [
+                {
+                    "id": 2,
+                    "name": "eius"
+                },
+                {...}
+            ]
+        },
+        {...}
+    ],
+    "reviews": [
+        {
+            "id": 1,
+            "title": "doloribus aut suscipit dolor",
+            "text": "Eum quos sed doloribus magni. Enim qui iste est dolor deleniti. Minus aut et a non.",
+            "type": "positive",
+            "author": {
+                "id": 1,
+                "name": "Аксёнова Альбина Романовна",
+                "login": "vitae",
+                "role": "admin"
+            }
+        },
+        {...}
+    ]
+}
+```
+
+---
+
+🟢 **Подписка на пользователя** ✅
+
+#### Запрос:
+
+`POST /api/v1/users/{id}`
+
+#### Ответ:
+
+```
+{
+    "status": "Успешно",
+    "message": "Теперь вы подписаны на vero"
+}
+```
+
+---
+
+🔴 **Отписка от пользователя** ✅
+
+#### Запрос:
+
+`DELETE /api/v1/users/{id}`
+
+#### Ответ:
+
+```
+{
+    "status": "Успешно",
+    "message": "Вы отписались от vero"
+}
+```
+
+---

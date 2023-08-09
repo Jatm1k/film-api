@@ -74,4 +74,14 @@ class User extends Authenticatable
         return $this->hasMany(Rating::class);
     }
 
+    public function subscriptions(): BelongsToMany
+    {
+        return $this->belongsToMany(User::class, 'user_subscriptions', 'subscriber_id', 'user_id');
+    }
+
+    public function subscribers(): BelongsToMany
+    {
+        return $this->belongsToMany(User::class, 'user_subscriptions', 'user_id', 'subscriber_id');
+    }
+
 }
