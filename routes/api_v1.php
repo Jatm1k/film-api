@@ -23,6 +23,7 @@ Route::controller(FilmController::class)->prefix('films')->group(function () {
     Route::get('/popular', 'popular');
     Route::get('/big-rating', 'bigRating');
     Route::get('/new', 'new');
+    Route::get('/recommendations', 'recommendations');
 
     Route::post('/{film}/watch', 'watch');
     Route::delete('/{film}/unwatch', 'unwatch');

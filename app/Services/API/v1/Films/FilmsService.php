@@ -9,6 +9,7 @@ use App\Facades\FilesHelper;
 use App\Models\API\v1\Film;
 use App\Models\API\v1\Rating;
 use App\Traits\API\v1\HasWatch;
+use Illuminate\Database\Eloquent\Collection;
 
 class FilmsService implements FilmsContract
 {
@@ -87,4 +88,28 @@ class FilmsService implements FilmsContract
     }
 
 
+    public function recommendations(): Collection
+    {
+        $watchedFilms = auth()->user()->watchedFilms;
+
+        if ($watchedFilms->count() > 0) {
+            $genres = $watchedFilms
+                ->flatMap(fn($film) => $film->genres)
+                ->groupBy('id')
+                ->sortByDesc(fn($group) => $group->count())->keys();
+
+            $recommendations = Film::query()->whereHas(
+                'genres',
+                fn($query) => $query->whereIn('id', $genres->take(2))
+            )
+                ->whereDoesntHave('watchedByUsers', fn($query) => $query->where('id', auth()->id()))
+                ->take(10)
+                ->get();
+        } else {
+            $recommendations = Film::query()->inRandomOrder()
+                ->whereDoesntHave('watchedByUsers', fn($query) => $query->where('id', auth()->id()))
+                ->take(10)->get();
+        }
+        return $recommendations;
+    }
 }

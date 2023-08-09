@@ -149,4 +149,13 @@ class FilmController extends Controller
             ->get();
         return response()->json(FilmMinifiedResource::collection($films));
     }
+
+    public function recommendations()
+    {
+        return response()->json(
+            FilmMinifiedResource::collection(
+                $this->service->recommendations()
+            )
+        );
+    }
 }
