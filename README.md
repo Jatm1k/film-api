@@ -1,4 +1,4 @@
-# Film API v0.9
+# Film API v0.91
 
 Учебный проект на Laravel
 
@@ -52,6 +52,13 @@ php artisan storage:link
 
 `GET /api/v1/films`
 
+```
+Params:
+{
+   limit: 10
+}
+```
+
 #### Ответ:
 
 ```
@@ -85,6 +92,13 @@ php artisan storage:link
 #### Запрос:
 
 `GET /api/v1/films/popular`
+
+```
+Params:
+{
+   limit: 10
+}
+```
 
 #### Ответ:
 
@@ -120,6 +134,13 @@ php artisan storage:link
 
 `GET /api/v1/films/big-rating`
 
+```
+Params:
+{
+   limit: 10
+}
+```
+
 #### Ответ:
 
 ```
@@ -153,6 +174,13 @@ php artisan storage:link
 #### Запрос:
 
 `GET /api/v1/films/new`
+
+```
+Params:
+{
+   limit: 10
+}
+```
 
 #### Ответ:
 
