@@ -4,6 +4,7 @@ namespace App\Http\Controllers\API\v1;
 
 use App\Contracts\API\v1\Films\FilmsContract;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\API\v1\Film\LimitFilmRequest;
 use App\Http\Requests\API\v1\Film\StoreFilmRequest;
 use App\Http\Requests\API\v1\Film\UpdateFilmRequest;
 use App\Http\Resources\API\v1\Film\FilmMinifiedResource;
@@ -28,9 +29,9 @@ class FilmController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index(): JsonResponse
+    public function index(LimitFilmRequest $request): JsonResponse
     {
-        $films = Film::query()->get();
+        $films = Film::query()->limit($request->limit)->get();
         return response()->json(FilmMinifiedResource::collection($films));
     }
 
@@ -123,29 +124,29 @@ class FilmController extends Controller
         );
     }
 
-    public function popular()
+    public function popular(LimitFilmRequest $request)
     {
         $films = Film::query()
             ->popular()
-            ->limit(100)
+            ->limit($request->limit)
             ->get();
         return response()->json(FilmMinifiedResource::collection($films));
     }
 
-    public function bigRating()
+    public function bigRating(LimitFilmRequest $request)
     {
         $films = Film::query()
             ->bigRating()
-            ->limit(100)
+            ->limit($request->limit)
             ->get();
         return response()->json(FilmMinifiedResource::collection($films));
     }
 
-    public function new()
+    public function new(LimitFilmRequest $request)
     {
         $films = Film::query()
             ->new()
-            ->limit(100)
+            ->limit($request->limit)
             ->get();
         return response()->json(FilmMinifiedResource::collection($films));
     }
